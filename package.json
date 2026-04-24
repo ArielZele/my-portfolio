@@ -4,7 +4,7 @@
   "description": "תיק השקעות חי עם Polygon.io",
   "scripts": {
     "dev": "vercel dev",
-    "build": "echo 'static site, no build needed'"
+    "build": "mkdir -p public && cp index.html public/"
   },
   "engines": {
     "node": "20.x"
