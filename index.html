@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📈 תיק ההשקעות שלי</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #080C14;
+  --bg2:      #0D1220;
+  --bg3:      #131929;
+  --border:   #1E2D45;
+  --border2:  #243350;
+  --text:     #E8EFF8;
+  --muted:    #5A7090;
+  --gold:     #C8953A;
+  --gold2:    #F0B84A;
+  --blue:     #3D8EF0;
+  --green:    #22C880;
+  --red:      #F04B4B;
+  --purple:   #8B72F0;
+  --teal:     #22B8CC;
+  --orange:   #F07840;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html,body { min-height: 100vh; }
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  direction: rtl;
+  padding-bottom: 80px;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(160deg, #0A1020 0%, #0F1A35 40%, #0A1020 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 20px 14px;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon { font-size: 26px; }
+.logo-text { font-size: 18px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+.logo-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.header-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.live-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: var(--green); }
+.live-dot::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--green); animation: pulse 2s infinite; flex-shrink:0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+/* ── TABS ── */
+.tabs-wrap { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 20px; position: sticky; top: 67px; z-index: 99; }
+.tabs { max-width: 1200px; margin: 0 auto; display: flex; gap: 4px; overflow-x: auto; }
+.tab { padding: 11px 18px; border: none; background: transparent; color: var(--muted); font-weight: 600; cursor: pointer; font-size: 13px; font-family: 'Heebo', sans-serif; border-bottom: 2px solid transparent; transition: all .2s; white-space: nowrap; }
+.tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.tab:hover:not(.active) { color: var(--text); }
+
+/* ── CONTENT ── */
+.content { max-width: 1200px; margin: 0 auto; padding: 20px; }
+.pane { display: none; }
+.pane.active { display: block; }
+
+/* ── BUTTONS ── */
+.btn { border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all .2s; white-space: nowrap; font-family: 'Heebo', sans-serif; border: 1px solid; display: inline-flex; align-items: center; gap: 6px; }
+.btn-blue   { background: #1A3060; color: var(--blue);   border-color: #3D8EF033; }
+.btn-green  { background: #0A2E1E; color: var(--green);  border-color: #22C88033; }
+.btn-purple { background: #1A1540; color: var(--purple); border-color: #8B72F033; }
+.btn-gold   { background: #2A1E08; color: var(--gold2);  border-color: #C8953A33; }
+.btn:hover { opacity: .85; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.3); }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* ── KPI ROW ── */
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 18px; }
+.kpi { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; position: relative; overflow: hidden; }
+.kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.kpi.blue::before   { background: var(--blue); }
+.kpi.green::before  { background: var(--green); }
+.kpi.gold::before   { background: var(--gold); }
+.kpi.purple::before { background: var(--purple); }
+.kpi.red::before    { background: var(--red); }
+.kpi-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.kpi-val { font-size: 22px; font-weight: 900; line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ── CARDS ── */
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.card-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+
+/* ── AI BOX ── */
+.ai-box { background: linear-gradient(135deg, #0D1030, #150D30); border: 1px solid #8B72F033; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+.ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; }
+.ai-body { margin-top: 14px; font-size: 13px; line-height: 1.8; color: #B8A8F0; display: none; border-top: 1px solid #8B72F022; padding-top: 12px; }
+
+/* ── TABLE ── */
+.table-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 14px; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 800px; }
+th { background: var(--bg3); color: var(--muted); padding: 10px 12px; text-align: right; font-weight: 600; font-size: 11px; letter-spacing: 0.3px; border-bottom: 1px solid var(--border); }
+td { padding: 10px 12px; border-bottom: 1px solid var(--border)44; vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg3) !important; }
+tbody tr:nth-child(even) td { background: #0B1018; }
+tbody tr.sig-row td { background: #1A1200 !important; }
+tbody tr.sig-row { border-right: 3px solid var(--gold); }
+tbody tr.new-row td { background: #0A1A10 !important; }
+tbody tr.new-row { border-right: 3px solid var(--green); }
+
+/* ── PILLS ── */
+.pill { padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; color: white; display: inline-block; }
+.badge { padding: 3px 9px; border-radius: 10px; font-size: 10px; font-weight: 800; white-space: nowrap; display: inline-block; }
+
+/* ── SIGNAL CARDS ── */
+.signal-card { background: var(--bg2); border: 1px solid #C8953A33; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-right: 4px solid var(--gold); }
+.signal-card.new-sig { border-color: #22C88033; border-right-color: var(--green); }
+.sig-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.sig-grid { display: flex; gap: 20px; margin-top: 14px; flex-wrap: wrap; }
+.sig-item .sl { font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+.sig-item .sv { font-weight: 700; font-size: 13px; }
+
+/* ── HABIT ── */
+.sunday-box { background: linear-gradient(135deg,#100D00,#1C1500); border: 1px solid #C8953A33; border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+.habit-hero { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px 20px; text-align: center; margin-bottom: 14px; }
+.streak-grid { display: flex; gap: 6px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+.streak-cell { width: 30px; height: 30px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; transition: all .2s; }
+.cl-row { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border)44; }
+.cl-row:last-child { border-bottom: none; }
+.cl-icon { font-size: 20px; width: 28px; text-align: center; }
+.cl-time { font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+/* ── ALLOCATION BAR ── */
+.alloc-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 12px; }
+.alloc-label { width: 140px; flex-shrink: 0; color: var(--text); }
+.alloc-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 8px; overflow: hidden; }
+.alloc-bar { height: 100%; border-radius: 4px; transition: width .6s ease; }
+.alloc-pct { width: 40px; text-align: left; color: var(--muted); }
+.alloc-target { width: 40px; text-align: left; font-size: 10px; color: var(--muted); }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--green); color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 800; font-size: 13px; z-index: 999; transition: transform .4s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── CONFETTI ── */
+.confetti-piece { position:fixed; top:-20px; animation:fall linear forwards; pointer-events:none; z-index:9999; }
+@keyframes fall { to { transform:translateY(110vh) rotate(720deg); opacity:0; } }
+
+/* ── MISC ── */
+.divider { height: 1px; background: var(--border); margin: 14px 0; }
+.note { background: #0D1A30; border: 1px solid #3D8EF022; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
+.rule-row { display: flex; gap: 12px; margin-bottom: 8px; font-size: 12px; align-items: flex-start; }
+.empty-state { text-align: center; padding: 36px 20px; color: var(--muted); }
+.empty-state .emoji { font-size: 40px; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">📈</div>
+      <div>
+        <div class="logo-text">תיק ההשקעות שלי</div>
+        <div class="logo-sub" id="subLine">חשבון 133-650659 · טוען...</div>
+      </div>
+    </div>
+    <div class="header-btns">
+      <span class="live-dot" id="liveStatus">לא מחובר</span>
+      <button class="btn btn-blue" onclick="fetchPrices()" id="refreshBtn">🔄 עדכן מחירים</button>
+      <button class="btn btn-green" onclick="downloadCSV()">📥 CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('dashboard',this)">📊 דשבורד</button>
+    <button class="tab" onclick="setTab('signals',this)">🔔 אותות</button>
+    <button class="tab" onclick="setTab('allocation',this)">🎯 תמהיל</button>
+    <button class="tab" onclick="setTab('habits',this)">🏆 הרגלים</button>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ── DASHBOARD ── -->
+  <div class="pane active" id="pane-dashboard">
+    <div class="kpi-row">
+      <div class="kpi blue">
+        <div class="kpi-label">שווי תיק</div>
+        <div class="kpi-val" id="kpiTotal" style="color:var(--blue)">₪37,680</div>
+        <div class="kpi-sub" id="kpiTotalSub">נתוני בסיס 22/4</div>
+      </div>
+      <div class="kpi green">
+        <div class="kpi-label">רווח כולל</div>
+        <div class="kpi-val" id="kpiPnl" style="color:var(--green)">+18.4%</div>
+        <div class="kpi-sub" id="kpiPnlILS">—</div>
+      </div>
+      <div class="kpi gold">
+        <div class="kpi-label">אותות פעילים</div>
+        <div class="kpi-val" id="kpiSig" style="color:var(--gold2)">—</div>
+        <div class="kpi-sub">בדוק לשונית אותות</div>
+      </div>
+      <div class="kpi purple">
+        <div class="kpi-label">USD/ILS</div>
+        <div class="kpi-val" id="kpiRate" style="color:var(--purple)">3.65</div>
+        <div class="kpi-sub" id="kpiRateSub">שער אחרון</div>
+      </div>
+      <div class="kpi green">
+        <div class="kpi-label">רצף שבועות 🔥</div>
+        <div class="kpi-val" id="kpiStreak" style="color:var(--green)">0</div>
+        <div class="kpi-sub">שבועות ברצף</div>
+      </div>
+    </div>
+
+    <!-- AI -->
+    <div class="ai-box">
+      <div class="ai-header">
+        <span style="font-weight:800;font-size:13px;color:var(--purple)">🤖 ניתוח שבועי — בינה מלאכותית</span>
+        <button class="btn btn-purple" onclick="getAiSummary()" id="aiBtn">🔍 נתח עכשיו</button>
+      </div>
+      <div class="ai-body" id="aiBody"></div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-card">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>שם נייר</th>
+              <th>מספר</th>
+              <th>קטג'</th>
+              <th>כמות</th>
+              <th>שער עלות</th>
+              <th>שער נוכחי</th>
+              <th>שווי ₪</th>
+              <th>רווח/הפסד</th>
+              <th>דרוג AI</th>
+              <th>פעימות</th>
+              <th>אות</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SIGNALS ── -->
+  <div class="pane" id="pane-signals">
+    <div style="margin-bottom:16px">
+      <div style="font-size:18px;font-weight:900;margin-bottom:4px">🔔 אותות פעילים</div>
+      <div style="font-size:12px;color:var(--muted)">רק הפוזיציות שדורשות פעולה השבוע — אם לא מופיע כאן, אל תיגע בכלום</div>
+    </div>
+    <div id="signalsList"></div>
+    <div class="card" style="border-color:#3D8EF022">
+      <div class="card-title" style="color:var(--blue)">⚙️ כללי הפעימות</div>
+      <div class="rule-row"><span style="color:var(--blue);font-weight:800;min-width:110px;flex-shrink:0">תעודת סל</span><span style="color:var(--muted)">שינוי ±5% מהכניסה האחרונה ← פעם הבאה</span></div>
+      <div class="rule-row"><span style="color:var(--blue);font-weight:800;min-width:110px;flex-shrink:0">מניה בודדת</span><span style="color:var(--muted)">שינוי ±8% מהכניסה האחרונה ← פעימה הבאה</span></div>
+      <div class="rule-row"><span style="color:var(--blue);font-weight:800;min-width:110px;flex-shrink:0">מקסימום</span><span style="color:var(--muted)">2 פעימות לכל פוזיציה — לא יותר</span></div>
+      <div class="rule-row"><span style="color:var(--blue);font-weight:800;min-width:110px;flex-shrink:0">כלל ברזל</span><span style="color:var(--muted)">אין אות = לא עושים כלום. סבלנות = כסף.</span></div>
+    </div>
+  </div>
+
+  <!-- ── ALLOCATION ── -->
+  <div class="pane" id="pane-allocation">
+    <div style="margin-bottom:16px">
+      <div style="font-size:18px;font-weight:900;margin-bottom:4px">🎯 תמהיל יעד</div>
+      <div style="font-size:12px;color:var(--muted)">האסטרטגיה שלך מול המצב הנוכחי</div>
+    </div>
+    <div class="card" id="allocCard">
+      <div class="card-title" style="color:var(--gold2)">📊 נתח בפועל vs יעד</div>
+      <div id="allocBars"></div>
+    </div>
+    <div class="card" style="border-color:#22C88022">
+      <div class="card-title" style="color:var(--green)">🛒 מה עדיין חסר בתיק</div>
+      <div style="font-size:12px;line-height:2;color:var(--muted)">
+        <div>🔴 <strong style="color:var(--text)">QQQM</strong> — סימול: <code style="color:var(--blue)">QQQM</code> · NASDAQ · יעד 15% · פעימה 1 עכשיו</div>
+        <div>🔴 <strong style="color:var(--text)">CIBR Cybersecurity</strong> — סימול: <code style="color:var(--blue)">CIBR</code> · NASDAQ · יעד 10% · פעימה 1 עכשיו</div>
+        <div>🟡 <strong style="color:var(--text)">תכלית ביטחוניות 4A</strong> — מספר: <code style="color:var(--teal)">1235985</code> · TASE · יעד 7.5%</div>
+        <div>🟡 <strong style="color:var(--text)">MTF תשתיות לאומיות</strong> — מספר: <code style="color:var(--teal)">310324</code> · TASE · יעד 12.5%</div>
+        <div>🟡 <strong style="color:var(--text)">הראל תא90+בנקים</strong> — מספר: <code style="color:var(--teal)">1213594</code> · TASE · יש בתיק, צריך להגדיל מ-5.8% ל-15%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HABITS ── -->
+  <div class="pane" id="pane-habits">
+    <div class="sunday-box">
+      <div style="font-size:10px;color:var(--gold);font-weight:800;letter-spacing:1.5px;margin-bottom:6px">⏰ יום הבדיקה הבא</div>
+      <div style="font-size:22px;font-weight:900;color:var(--gold2)" id="nextSunFull">—</div>
+      <div style="font-size:12px;color:#7A5020;margin-top:5px">כל יום ראשון · 15 דקות · בדוק אותות · פעל רק אם יש</div>
+    </div>
+
+    <div class="habit-hero" id="checkinBox">
+      <div style="font-size:52px;margin-bottom:10px" id="checkinIcon">📋</div>
+      <div style="font-size:18px;font-weight:800;margin-bottom:6px" id="checkinTitle">האם בדקת את התיק השבוע?</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:20px" id="checkinSub">לחץ כשסיימת לבדוק ולבצע כל פעולה נדרשת</div>
+      <button class="btn btn-green" style="font-size:14px;padding:12px 28px" id="checkinBtn" onclick="checkIn()">✅ סיימתי את הבדיקה השבועית</button>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase">🔥 Streak</div>
+      <div style="font-size:56px;font-weight:900;color:var(--gold2);line-height:1;margin:8px 0 4px" id="streakNum">0</div>
+      <div style="font-size:12px;color:var(--muted)">שבועות ברצף</div>
+      <div class="streak-grid" id="streakGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">✅ צ'קליסט יום ראשון — 15 דקות בלבד</div>
+      <div class="cl-row"><span class="cl-icon">🔄</span><span style="flex:1;font-size:12px">לחץ "עדכן מחירים" — תראה מחירים חיים מ-Polygon</span><span class="cl-time">30 שנ'</span></div>
+      <div class="cl-row"><span class="cl-icon">🔔</span><span style="flex:1;font-size:12px">פתח לשונית "אותות" — יש אות חצוי ±5%/±8%?</span><span class="cl-time">2 דק'</span></div>
+      <div class="cl-row"><span class="cl-icon">📊</span><span style="flex:1;font-size:12px">אם כן — בצע פעימה בבנק/ברוקר</span><span class="cl-time">5 דק'</span></div>
+      <div class="cl-row"><span class="cl-icon">📥</span><span style="flex:1;font-size:12px">הורד CSV לשמירת היסטוריה</span><span class="cl-time">30 שנ'</span></div>
+      <div class="cl-row"><span class="cl-icon">📓</span><span style="flex:1;font-size:12px">רשום כל פעולה ביומן (מה, כמה, למה)</span><span class="cl-time">2 דק'</span></div>
+      <div class="cl-row"><span class="cl-icon">✅</span><span style="flex:1;font-size:12px">לחץ "סיימתי" — ה-Streak יעלה ב-1</span><span class="cl-time">5 שנ'</span></div>
+    </div>
+
+    <div class="card" style="border-color:#8B72F033">
+      <div class="card-title" style="color:var(--purple)">🧠 הפסיכולוגיה של המשקיע המנצח</div>
+      <blockquote style="border-right:3px solid var(--purple);padding-right:14px;color:#B0A0E0;font-size:13px;line-height:1.8;margin-bottom:12px">
+        "The stock market is a device for transferring money from the impatient to the patient."
+        <br><span style="font-size:11px;color:var(--purple);font-weight:700">— Warren Buffett</span>
+      </blockquote>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7">
+        שבוע ללא אות = <strong style="color:var(--purple)">הצלחה</strong>. עשית בדיקה, ראית שאין מה לעשות, יצאת. זה בדיוק ההרגל.<br>
+        רוב המשקיעים מפסידים כי עושים <em>יותר מדי</em>. לא פחות מדי.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ נרשם! רצף עלה ב-1 🔥</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// נתוני תיק אמיתיים — מהאקסל שלך 22/04/2026
+// ════════════════════════════════════════════════════════════
+const PORTFOLIO = [
+  // ── מניות + ETF נוכחיים ──────────────────────────────────
+  { id:"googl",  name:"Alphabet (GOOGL)",       num:"60354768", sym:"GOOGL",   market:"USD", cat:"מניות",       qty:5,  cost:174.46,  last:330.47, valILS:4961.35,  pnlPct:89.42,  pnlILS:2342.17, ai:"-",       aiScore:"-",     pulses:2, trigger:8 },
+  { id:"aapl",   name:"Apple Computer",          num:"103788",   sym:"AAPL",    market:"USD", cat:"מניות",       qty:1,  cost:223.9,   last:266.17, valILS:799.2,    pnlPct:18.88,  pnlILS:126.91,  ai:"קניה חזקה",aiScore:"97/100", pulses:2, trigger:8 },
+  { id:"cifr",   name:"Cipher Digital",          num:"25727009", sym:"CIFR",    market:"USD", cat:"AI תשתית",    qty:43, cost:14.76,   last:18.04,  valILS:2329.17,  pnlPct:22.22,  pnlILS:423.48,  ai:"מכירה",   aiScore:"42/100", pulses:2, trigger:8 },
+  { id:"iren",   name:"IREN Ltd",                num:"28941854", sym:"IREN",    market:"USD", cat:"AI תשתית",    qty:28, cost:36.63,   last:45.17,  valILS:3797.57,  pnlPct:23.31,  pnlILS:717.98,  ai:"מכירה",   aiScore:"37/100", pulses:2, trigger:8 },
+  { id:"spy",    name:"iShares S&P500 UCITS",    num:"1159250",  sym:null,      market:"ILS", cat:"S&P500",      qty:3,  cost:213400,  last:228250, valILS:6847.5,   pnlPct:6.96,   pnlILS:445.5,   ai:"-",       aiScore:"-",     pulses:2, trigger:5 },
+  { id:"gold",   name:"iShares Gold Trust",       num:"60043874", sym:"IAU",     market:"USD", cat:"זהב",         qty:3,  cost:66.0,    last:88.04,  valILS:793.05,   pnlPct:33.39,  pnlILS:198.53,  ai:"-",       aiScore:"-",     pulses:2, trigger:5 },
+  { id:"lmnd",   name:"Lemonade Inc",             num:"24082098", sym:"LMND",    market:"USD", cat:"מניות",       qty:4,  cost:42.93,   last:66.06,  valILS:793.41,   pnlPct:53.88,  pnlILS:277.8,   ai:"החזקה",   aiScore:"67/100", pulses:2, trigger:8 },
+  { id:"mtf",    name:"MTF אנרגיה מתחדשת",       num:"1168723",  sym:null,      market:"ILS", cat:"אנרגיה",      qty:50, cost:1026,    last:2055,   valILS:1027.5,   pnlPct:100.29, pnlILS:514.5,   ai:"-",       aiScore:"-",     pulses:1, trigger:5 },
+  { id:"nvda",   name:"NVIDIA Corp",              num:"119636",   sym:"NVDA",    market:"USD", cat:"מניות",       qty:7,  cost:126.98,  last:199.88, valILS:4201.12,  pnlPct:57.41,  pnlILS:1532.22, ai:"ביצועי חסר",aiScore:"58/100",pulses:2, trigger:8 },
+  { id:"hood",   name:"Robinhood Markets",        num:"27512888", sym:"HOOD",    market:"USD", cat:"מניות",       qty:6,  cost:86.86,   last:86.43,  valILS:1557.09,  pnlPct:-0.5,   pnlILS:-7.74,   ai:"החזקה",   aiScore:"64/100", pulses:2, trigger:8 },
+  { id:"tat",    name:"TAT Technologies",          num:"100370",   sym:"TATT",    market:"USD", cat:"ביטחוניות",   qty:4,  cost:39.51,   last:35.84,  valILS:430.45,   pnlPct:-9.28,  pnlILS:-44.07,  ai:"קניה",    aiScore:"82/100", pulses:1, trigger:8 },
+  { id:"harel",  name:"הראל סל תא90+בנקים",     num:"1213594",  sym:null,      market:"ILS", cat:"בנקים+תא90",  qty:53, cost:3843.66, last:4143,   valILS:2195.79,  pnlPct:7.79,   pnlILS:158.65,  ai:"-",       aiScore:"-",     pulses:2, trigger:5 },
+  // ── לקנות ────────────────────────────────────────────────
+  { id:"qqqm",   name:"QQQM",                     num:"—",        sym:"QQQM",    market:"USD", cat:"NASDAQ100",   qty:0,  cost:0,       last:0,      valILS:0,        pnlPct:null,   pnlILS:0,       ai:"פתח",     aiScore:"—",     pulses:0, trigger:5 },
+  { id:"cibr",   name:"CIBR Cybersecurity",        num:"—",        sym:"CIBR",    market:"USD", cat:"סייבר",       qty:0,  cost:0,       last:0,      valILS:0,        pnlPct:null,   pnlILS:0,       ai:"פתח",     aiScore:"—",     pulses:0, trigger:5 },
+  { id:"btach",  name:"תכלית ביטחוניות (4A)",     num:"1235985",  sym:null,      market:"ILS", cat:"ביטחוניות",   qty:0,  cost:0,       last:0,      valILS:0,        pnlPct:null,   pnlILS:0,       ai:"פתח",     aiScore:"—",     pulses:0, trigger:5 },
+  { id:"infra",  name:"MTF תשתיות לאומיות",       num:"310324",   sym:null,      market:"ILS", cat:"תשתיות",      qty:0,  cost:0,       last:0,      valILS:0,        pnlPct:null,   pnlILS:0,       ai:"פתח",     aiScore:"—",     pulses:0, trigger:5 },
+];
+
+const CAT_COLORS = {
+  "S&P500":"#3D8EF0","NASDAQ100":"#8B72F0","סייבר":"#22B8CC",
+  "בנקים+תא90":"#22C880","ביטחוניות":"#F0B84A","תשתיות":"#88C840",
+  "מניות":"#F050A0","AI תשתית":"#B060F0","זהב":"#F07840",
+  "אנרגיה":"#40C0A0"
+};
+
+const ALLOC_TARGETS = [
+  { cat:"בנקים+תא90",  target:15,  ids:["harel"] },
+  { cat:"תשתיות",      target:12.5,ids:["mtf","infra"] },
+  { cat:"ביטחוניות",   target:7.5, ids:["tat","btach"] },
+  { cat:"NASDAQ100",   target:15,  ids:["qqqm"] },
+  { cat:"S&P500",      target:10,  ids:["spy"] },
+  { cat:"סייבר",       target:10,  ids:["cibr"] },
+  { cat:"מניות",       target:30,  ids:["googl","nvda","aapl","lmnd","hood"] },
+];
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let livePrices = {};   // { GOOGL: 330.47, ... }
+let usdils = 3.65;
+let priceSource = "בסיס";
+
+// ════════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════════
+const pnlColor = v => v == null ? "var(--muted)" : v > 0 ? "var(--green)" : v < 0 ? "var(--red)" : "var(--muted)";
+function pct(cur, base) { return base ? ((cur-base)/base)*100 : null; }
+function fmtN(n, d=2) { return n != null ? n.toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}) : "—"; }
+function fmtILS(n) { return n ? "₪"+Math.round(n).toLocaleString() : "—"; }
+
+function getCurrentPrice(p) {
+  if (p.sym && livePrices[p.sym] != null) return livePrices[p.sym];
+  return p.last; // fallback to Excel data
+}
+function getCurrentValueILS(p) {
+  const cur = getCurrentPrice(p);
+  if (!cur || !p.qty) return 0;
+  return p.market === "ILS" ? cur * p.qty : cur * p.qty * usdils;
+}
+function getCurrentPnlPct(p) {
+  const cur = getCurrentPrice(p);
+  if (!cur || !p.cost || p.cost === 0) return p.pnlPct;
+  return pct(cur, p.cost);
+}
+
+function signalBadge(p) {
+  const pnl = getCurrentPnlPct(p);
+  if (!p.cost || p.cost === 0) return `<span class="badge" style="background:#0A2E1E;color:var(--green);border:1px solid #22C88033">🛒 פתח</span>`;
+  if (p.pulses >= 2)           return `<span class="badge" style="background:#0D1A10;color:#4A8060">✅ מלא</span>`;
+  if (pnl == null)             return `<span class="badge" style="background:var(--bg3);color:var(--muted)">—</span>`;
+  if (Math.abs(pnl) >= p.trigger) return `<span class="badge" style="background:#2A1E00;color:var(--gold2);border:1px solid #C8953A33">🔔 יש אות!</span>`;
+  return `<span class="badge" style="background:var(--bg3);color:var(--muted)">⏳ ממתין</span>`;
+}
+
+// ════════════════════════════════════════════════════════════
+// FETCH PRICES from /api/prices (Polygon via Vercel)
+// ════════════════════════════════════════════════════════════
+async function fetchPrices() {
+  const btn = document.getElementById("refreshBtn");
+  btn.disabled = true; btn.innerHTML = "⏳ טוען...";
+  document.getElementById("liveStatus").textContent = "מתחבר...";
+
+  try {
+    const res = await fetch("/api/prices");
+    if (!res.ok) throw new Error("HTTP "+res.status);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    livePrices = data;
+    usdils = data.USDILS || 3.65;
+    priceSource = "Polygon.io";
+
+    const t = new Date(data._updated || Date.now());
+    document.getElementById("subLine").textContent =
+      `חשבון 133-650659 · עודכן ${t.toLocaleTimeString("he-IL")} · מקור: Polygon.io`;
+    document.getElementById("liveStatus").textContent = "מחובר";
+    document.getElementById("kpiRate").textContent = usdils.toFixed(3);
+    document.getElementById("kpiRateSub").textContent = "Polygon live";
+
+    showToast("✅ מחירים חיים נטענו מ-Polygon.io");
+  } catch(e) {
+    console.warn("Polygon error:", e.message, "— using Excel baseline");
+    document.getElementById("liveStatus").textContent = "נתוני בסיס";
+    document.getElementById("subLine").textContent = `חשבון 133-650659 · נתוני בסיס 22/4/2026 (Polygon לא זמין)`;
+    showToast("⚠️ Polygon לא זמין — מוצגים נתוני בסיס");
+  }
+
+  renderAll();
+  btn.disabled = false; btn.innerHTML = "🔄 עדכן מחירים";
+}
+
+// ════════════════════════════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════════════════════════════
+function renderAll() {
+  renderTable();
+  renderSignals();
+  renderAlloc();
+  renderKPIs();
+}
+
+function renderKPIs() {
+  let totalVal = 0, totalCost = 0, sigCount = 0;
+  PORTFOLIO.forEach(p => {
+    const val = getCurrentValueILS(p);
+    totalVal += val;
+    if (p.cost && p.qty) {
+      const costILS = p.market === "ILS" ? p.cost * p.qty : p.cost * p.qty * usdils;
+      totalCost += costILS;
+    }
+    const pnl = getCurrentPnlPct(p);
+    if ((!p.cost || p.cost===0) || (pnl!=null && Math.abs(pnl)>=p.trigger && p.pulses<2)) sigCount++;
+  });
+
+  const totalPnlPct = totalCost > 0 ? ((totalVal - totalCost) / totalCost) * 100 : 0;
+  const totalPnlILS = totalVal - totalCost;
+
+  document.getElementById("kpiTotal").textContent = fmtILS(totalVal);
+  document.getElementById("kpiTotalSub").textContent = priceSource;
+  document.getElementById("kpiPnl").textContent = (totalPnlPct>0?"+":"")+fmtN(totalPnlPct,1)+"%";
+  document.getElementById("kpiPnl").style.color = pnlColor(totalPnlPct);
+  document.getElementById("kpiPnlILS").textContent = (totalPnlILS>0?"+":"")+fmtILS(totalPnlILS);
+  document.getElementById("kpiSig").textContent = sigCount;
+  document.getElementById("kpiStreak").textContent = getStreak();
+}
+
+function renderTable() {
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = "";
+  PORTFOLIO.forEach(p => {
+    const cur = getCurrentPrice(p);
+    const valILS = getCurrentValueILS(p);
+    const pnl = getCurrentPnlPct(p);
+    const isNew = !p.cost || p.cost === 0;
+    const hasSig = !isNew && pnl!=null && Math.abs(pnl)>=p.trigger && p.pulses<2;
+
+    const tr = document.createElement("tr");
+    if (hasSig) tr.className = "sig-row";
+    else if (isNew) tr.className = "new-row";
+
+    const curFmt = cur ? (p.market==="ILS" ? "₪"+Math.round(cur).toLocaleString() : "$"+fmtN(cur)) : "—";
+    const costFmt = p.cost ? (p.market==="ILS" ? "₪"+Math.round(p.cost).toLocaleString() : "$"+fmtN(p.cost)) : "—";
+    const pnlFmt = pnl!=null ? `<span style="color:${pnlColor(pnl)};font-weight:800">${pnl>0?"+":""}${fmtN(pnl,1)}%</span>` : "—";
+    const cc = CAT_COLORS[p.cat]||"#666";
+    const pulseDots = `<span style="opacity:${p.pulses>=1?1:.2};font-size:14px">●</span><span style="opacity:${p.pulses>=2?1:.2};font-size:14px">●</span>`;
+    const liveIndicator = p.sym && livePrices[p.sym] ? ' <span style="font-size:9px;color:var(--green)">●</span>' : '';
+
+    tr.innerHTML = `
+      <td><div style="font-weight:700;font-size:12px">${p.name}${liveIndicator}</div></td>
+      <td style="font-size:10px;color:var(--muted)">${p.num}</td>
+      <td><span class="pill" style="background:${cc}">${p.cat}</span></td>
+      <td style="text-align:center;font-weight:600">${p.qty||"—"}</td>
+      <td style="color:var(--muted);font-size:11px">${costFmt}</td>
+      <td style="font-weight:700">${curFmt}</td>
+      <td style="font-weight:700">${valILS?fmtILS(valILS):"—"}</td>
+      <td>${pnlFmt}</td>
+      <td style="font-size:11px;color:${p.aiScore==="—"?"var(--muted)":p.aiScore>="80"?"var(--green)":"var(--text)"}">${p.aiScore}</td>
+      <td style="text-align:center">${pulseDots}</td>
+      <td>${signalBadge(p)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderSignals() {
+  const list = document.getElementById("signalsList");
+  list.innerHTML = "";
+  const active = PORTFOLIO.filter(p => {
+    const pnl = getCurrentPnlPct(p);
+    const isNew = !p.cost || p.cost===0;
+    return isNew || (pnl!=null && Math.abs(pnl)>=p.trigger && p.pulses<2);
+  });
+
+  if (!active.length) {
+    list.innerHTML = `<div class="empty-state"><div class="emoji">😴</div><div>אין אותות פעילים עכשיו</div><div style="font-size:12px;margin-top:6px">שב בצד — זאת בדיוק הפעולה הנכונה</div></div>`;
+    return;
+  }
+
+  active.forEach(p => {
+    const isNew = !p.cost || p.cost===0;
+    const pnl = getCurrentPnlPct(p);
+    const cur = getCurrentPrice(p);
+    const action = isNew ? "פתח פעימה 1" : `כנס פעימה ${p.pulses+1}`;
+    const cc = CAT_COLORS[p.cat]||"#666";
+
+    const div = document.createElement("div");
+    div.className = "signal-card" + (isNew?" new-sig":"");
+    div.innerHTML = `
+      <div class="sig-top">
+        <div>
+          <div style="font-weight:800;font-size:14px">${p.name}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px">
+            ${p.sym||p.num} · <span class="pill" style="background:${cc};font-size:9px">${p.cat}</span>
+          </div>
+        </div>
+        ${signalBadge(p)}
+      </div>
+      <div class="sig-grid">
+        ${p.cost ? `
+        <div class="sig-item"><div class="sl">כניסה</div><div class="sv">${p.market==="ILS"?"₪"+Math.round(p.cost).toLocaleString():"$"+fmtN(p.cost)}</div></div>
+        <div class="sig-item"><div class="sl">נוכחי</div><div class="sv" style="color:${pnlColor(pnl)}">${cur?(p.market==="ILS"?"₪"+Math.round(cur).toLocaleString():"$"+fmtN(cur)):"—"}</div></div>
+        <div class="sig-item"><div class="sl">שינוי</div><div class="sv" style="color:${pnlColor(pnl)};font-size:15px">${pnl!=null?(pnl>0?"+":"")+fmtN(pnl,1)+"%":"חדש"}</div></div>
+        ` : ""}
+        <div class="sig-item"><div class="sl">טריגר</div><div class="sv">±${p.trigger}%</div></div>
+        <div class="sig-item"><div class="sl">פעולה</div><div class="sv" style="color:var(--gold2)">${action}</div></div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function renderAlloc() {
+  const totalVal = PORTFOLIO.reduce((s,p)=>s+getCurrentValueILS(p),0);
+  const bars = document.getElementById("allocBars");
+  bars.innerHTML = "";
+
+  ALLOC_TARGETS.forEach(a => {
+    const actual = PORTFOLIO.filter(p=>a.ids.includes(p.id)).reduce((s,p)=>s+getCurrentValueILS(p),0);
+    const actualPct = totalVal ? (actual/totalVal)*100 : 0;
+    const gap = actualPct - a.target;
+    const barColor = gap < -3 ? "var(--red)" : gap > 3 ? "var(--orange)" : "var(--green)";
+    const status = gap < -3 ? "⬇️ חסר" : gap > 3 ? "⬆️ עודף" : "✅ בטווח";
+
+    bars.innerHTML += `
+      <div class="alloc-row">
+        <div class="alloc-label">${a.cat}</div>
+        <div class="alloc-bar-wrap">
+          <div class="alloc-bar" style="width:${Math.min(actualPct/a.target*100,150)}%;background:${barColor}"></div>
+        </div>
+        <div class="alloc-pct" style="color:${barColor}">${fmtN(actualPct,1)}%</div>
+        <div class="alloc-target">/ ${a.target}%</div>
+        <div style="font-size:10px;color:${barColor};min-width:60px">${status}</div>
+      </div>
+    `;
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+// AI SUMMARY
+// ════════════════════════════════════════════════════════════
+async function getAiSummary() {
+  const btn = document.getElementById("aiBtn");
+  btn.disabled=true; btn.innerHTML="⏳ מנתח...";
+  const rows = PORTFOLIO.map(p => {
+    const cur = getCurrentPrice(p);
+    const pnl = getCurrentPnlPct(p);
+    return `${p.name} (${p.sym||p.num}): כניסה ${p.cost||0}, נוכחי ${cur||"?"}, ${pnl!=null?pnl.toFixed(1)+"%":"חדש"}, פעימות: ${p.pulses}/2, דרוג: ${p.aiScore}`;
+  }).join("\n");
+
+  const prompt = `אתה יועץ השקעות ישראלי מנוסה בסגנון מיכה סטוק וגיא נתן.
+תיק של משקיע ישראלי, 20+, תיק כ-37,000 שקל.
+אסטרטגיה: DCA עם פעימות (ETF ±5%, מניות ±8%), יעד 30% שנתי.
+${rows}
+תן סיכום שבועי בעברית — 4 משפטים:
+1. הנייר החזק ביותר השבוע ולמה
+2. הנייר המדאיג ביותר ולמה
+3. אות ספציפי אחד שעליו לשים לב
+4. אזהרה אחת קצרה
+ישיר, ספציפי, ללא כלליות.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:600,messages:[{role:"user",content:prompt}]})
+    });
+    const data = await res.json();
+    const text = (data.content||[]).map(c=>c.text||"").join("");
+    const el = document.getElementById("aiBody");
+    el.textContent = text;
+    el.style.display = "block";
+  } catch(e) { console.error(e); }
+  btn.disabled=false; btn.innerHTML="🔍 נתח עכשיו";
+}
+
+// ════════════════════════════════════════════════════════════
+// CSV DOWNLOAD
+// ════════════════════════════════════════════════════════════
+function downloadCSV() {
+  const headers = ["שם","מספר","קטגוריה","כמות","שער עלות","שער נוכחי","שווי ₪","רווח %","פעימות","טריגר"];
+  const rows = PORTFOLIO.map(p => {
+    const cur = getCurrentPrice(p);
+    const pnl = getCurrentPnlPct(p);
+    return [p.name, p.num, p.cat, p.qty||0,
+            p.cost||0, cur?cur.toFixed(2):"—",
+            Math.round(getCurrentValueILS(p)),
+            pnl!=null?pnl.toFixed(1)+"%":"—",
+            p.pulses+"/2", p.trigger+"%"];
+  });
+  const csv = "\uFEFF"+[headers,...rows].map(r=>r.join(",")).join("\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8;"}));
+  a.download = `תיק_${new Date().toISOString().split("T")[0]}.csv`;
+  a.click();
+}
+
+// ════════════════════════════════════════════════════════════
+// HABIT / STREAK
+// ════════════════════════════════════════════════════════════
+function getHabit() { try{return JSON.parse(localStorage.getItem("habit")||"[]");}catch{return[];} }
+function saveHabit(h) { try{localStorage.setItem("habit",JSON.stringify(h));}catch{} }
+function getWeekNum() {
+  const d=new Date(),jan=new Date(d.getFullYear(),0,1);
+  return Math.ceil((((d-jan)/86400000)+jan.getDay()+1)/7);
+}
+function todayStr() { return new Date().toISOString().split("T")[0]; }
+function getStreak() {
+  const h=getHabit(); if(!h.length)return 0;
+  const ws=[...new Set(h.map(x=>x.week))].sort((a,b)=>b-a);
+  let s=1,c=ws[0];
+  for(let i=1;i<ws.length;i++){if(ws[i]===c-1){s++;c=ws[i];}else break;}
+  return s;
+}
+function getNextSunday() {
+  const d=new Date(),day=d.getDay(),diff=(7-day)%7||7;
+  d.setDate(d.getDate()+diff); return d;
+}
+function renderHabits() {
+  const h=getHabit(), streak=getStreak(), today=todayStr();
+  const checked=h.find(x=>x.date===today);
+  document.getElementById("streakNum").textContent=streak;
+  document.getElementById("kpiStreak").textContent=streak;
+  document.getElementById("nextSunFull").textContent=getNextSunday().toLocaleDateString("he-IL",{weekday:"long",day:"numeric",month:"long"});
+  if(checked){
+    document.getElementById("checkinIcon").textContent="🏆";
+    document.getElementById("checkinTitle").textContent="בדיקה שבועית בוצעה! 🎉";
+    document.getElementById("checkinSub").textContent=`רצף: ${streak} שבועות ברצף`;
+    document.getElementById("checkinBtn").style.display="none";
+  }
+  const grid=document.getElementById("streakGrid"); grid.innerHTML="";
+  const cells=Math.max(10,h.length+3), curW=getWeekNum();
+  for(let i=0;i<cells;i++){
+    const w=curW-(cells-1-i), done=h.find(x=>x.week===w);
+    const el=document.createElement("div");
+    el.className="streak-cell";
+    el.style.background=done?"var(--gold)":"var(--bg3)";
+    el.style.border=`1px solid ${done?"var(--gold)44":"var(--border)"}`;
+    el.style.color=done?"#000":"var(--muted)";
+    el.textContent=done?"✓":"·";
+    grid.appendChild(el);
+  }
+}
+function checkIn() {
+  const h=getHabit(), today=todayStr();
+  if(h.find(x=>x.date===today))return;
+  h.push({date:today,week:getWeekNum()});
+  saveHabit(h); renderHabits(); spawnConfetti();
+  showToast("🏆 נרשם! רצף עלה ב-1 🔥");
+}
+
+// ════════════════════════════════════════════════════════════
+// TABS / TOAST / CONFETTI
+// ════════════════════════════════════════════════════════════
+function setTab(name,btn) {
+  document.querySelectorAll(".pane").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("pane-"+name).classList.add("active");
+  btn.classList.add("active");
+}
+function showToast(msg) {
+  const t=document.getElementById("toast"); t.textContent=msg;
+  t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),3000);
+}
+function spawnConfetti() {
+  const colors=["#F0B84A","#22C880","#3D8EF0","#F050A0","#8B72F0"];
+  for(let i=0;i<35;i++){
+    const el=document.createElement("div"); el.className="confetti-piece";
+    el.style.cssText=`left:${Math.random()*100}%;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[i%5]};border-radius:${Math.random()>.5?"50%":"2px"};animation-duration:${1+Math.random()*2}s;animation-delay:${Math.random()*0.5}s`;
+    document.body.appendChild(el); setTimeout(()=>el.remove(),3500);
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+renderAll();
+renderHabits();
+// Auto-refresh every 5 minutes
+setInterval(fetchPrices, 5 * 60 * 1000);
+</script>
+</body>
+</html>
