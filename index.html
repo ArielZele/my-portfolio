@@ -434,8 +434,8 @@ async function fetchPrices() {
     if (data.error) throw new Error(data.error);
 
     livePrices = data;
-    usdils = data.USDILS || 3.65;
-    priceSource = "Polygon.io";
+    usdils = (data.USDILS && data.USDILS > 3.0) ? data.USDILS : 3.65;
+    priceSource = data._source || "Yahoo Finance";
 
     const t = new Date(data._updated || Date.now());
     document.getElementById("subLine").textContent =
@@ -448,7 +448,7 @@ async function fetchPrices() {
   } catch(e) {
     console.warn("Polygon error:", e.message, "— using Excel baseline");
     document.getElementById("liveStatus").textContent = "נתוני בסיס";
-    document.getElementById("subLine").textContent = `חשבון 133-650659 · נתוני בסיס 22/4/2026 (Polygon לא זמין)`;
+    document.getElementById("subLine").textContent = `חשבון 133-650659 · נתוני בסיס 22/4/2026 ("Yahoo Finance לא זמין")`;
     showToast("⚠️ Polygon לא זמין — מוצגים נתוני בסיס");
   }
 
